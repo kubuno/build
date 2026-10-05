@@ -1,0 +1,11 @@
+/* Accent du module App (bleu→violet façon Bubble). */
+[data-module="app"] {
+  --module-accent: #2563eb;
+  /* Fond de l'espace de travail du builder (gris autour de la page). */
+  --app-canvas-bg: #b9bec7;
+}
+
+/* Le canvas du builder ne doit pas hériter des transitions globales du shell. */
+[data-testid="app-canvas"] * {
+  box-sizing: border-box;
+}

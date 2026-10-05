@@ -1,0 +1,347 @@
+use anyhow::{Context, Result};
+use kubuno_build::{config::Settings, files_client::FilesClient, router, state::AppState, SCHEMA};
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
+use std::sync::Arc;
+use std::time::Duration;
+
+// ── Manifest ──────────────────────────────────────────────────────────────────
+
+#[derive(Deserialize)]
+struct Manifest {
+    module:        ManifestModule,
+    #[serde(default)]
+    sidebar_items: Vec<SidebarItemRaw>,
+    events:        Option<ManifestEvents>,
+    /// Declarative instance settings pushed to the core at registration.
+    #[serde(default)]
+    settings:      Vec<SettingDefRaw>,
+    /// Pages the module's admin surface is split into (`[[setting_groups]]`).
+    #[serde(default)]
+    setting_groups: Vec<SettingGroupRaw>,
+}
+
+/// One `[[setting_groups]]` entry of module.toml, forwarded verbatim. `id` is a
+/// STABLE, UNTRANSLATED slug: it travels in the URL of the admin page.
+#[derive(Deserialize, Serialize)]
+struct SettingGroupRaw {
+    id:          String,
+    label:       String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    icon:        Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    position:    Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    description: Option<String>,
+}
+
+/// One `[[settings]]` entry from module.toml. Serialized verbatim into the
+/// registration payload (`type` is renamed to match the core's `SettingDef`).
+#[derive(Deserialize, Serialize)]
+struct SettingDefRaw {
+    key:         String,
+    scope:       String,
+    #[serde(rename = "type")]
+    value_type:  String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    values:      Option<Vec<Value>>,
+    default:     Value,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    label:       Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    description: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    category:    Option<String>,
+    /// Id of a `[[setting_groups]]` entry of this manifest: which admin page the
+    /// setting belongs to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    group:       Option<String>,
+    /// Exposed in the public `/api/v1/config` the front end reads.
+    #[serde(default)]
+    public:      bool,
+
+    // Presentation metadata rendered by the generic admin console.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    min:         Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    max:         Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    unit:        Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    placeholder: Option<String>,
+    #[serde(default)]
+    multiline:   bool,
+    #[serde(default)]
+    advanced:    bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    risk:        Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    depends_on:  Option<String>,
+}
+
+#[derive(Deserialize)]
+struct ManifestModule {
+    #[allow(dead_code)]
+    id:           String,
+    display_name: String,
+    description:  Option<String>,
+}
+
+#[derive(Deserialize)]
+struct SidebarItemRaw {
+    id:       String,
+    label:    String,
+    icon:     String,
+    path:     String,
+    position: i32,
+}
+
+#[derive(Deserialize)]
+struct ManifestEvents {
+    #[serde(default)]
+    subscribed: Vec<String>,
+}
+
+fn load_manifest() -> Option<Manifest> {
+    let path = if let Ok(dir) = std::env::var("KUBUNO_MODULE_DIR") {
+        std::path::PathBuf::from(dir).join("module.toml")
+    } else {
+        std::env::current_exe().ok()?.parent()?.join("module.toml")
+    };
+
+    let content = std::fs::read_to_string(&path)
+        .map_err(|e| tracing::warn!(path = %path.display(), error = %e, "module.toml introuvable"))
+        .ok()?;
+
+    toml::from_str::<Manifest>(&content)
+        .map_err(|e| tracing::error!(path = %path.display(), error = %e, "module.toml invalide"))
+        .ok()
+}
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────────
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let _ = dotenvy::dotenv();
+
+    let settings = Settings::load().context("Chargement de la configuration")?;
+
+    let log_level = settings.logging.level.clone();
+    let subscriber = tracing_subscriber::fmt().with_env_filter(
+        tracing_subscriber::EnvFilter::try_from_default_env()
+            .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new(&log_level)),
+    );
+    match settings.logging.format {
+        kubuno_build::config::LogFormat::Json   => subscriber.json().init(),
+        kubuno_build::config::LogFormat::Pretty => subscriber.init(),
+    }
+
+    tracing::info!("Kubuno Build v{} démarrage…", env!("CARGO_PKG_VERSION"));
+
+    // Security: forbid any process execution on the host (see kubuno-seccomp).
+    kubuno_seccomp::lock_down_process_execution("build");
+
+    // Database pool. The engine (PostgreSQL / MySQL / SQLite) is the
+    // administrator's choice in `[database] engine`, read at run time; `connect`
+    // also creates the module's namespace (PostgreSQL schema, MySQL database, or
+    // the ATTACHed SQLite file).
+    let pool = kubuno_db::connect(&settings.database, SCHEMA)
+        .await
+        .context("Connexion à la base de données")?;
+
+    // Migrations: the set for the pool's engine, kept inside the module's own
+    // namespace (the table PostgreSQL already used through its search_path).
+    if settings.database.run_migrations {
+        kubuno_db::migrations!(
+            "./migrations/postgres",
+            "./migrations/mysql",
+            "./migrations/sqlite",
+        )
+        .run(&pool, SCHEMA)
+        .await
+        .context("Migrations")?;
+    }
+
+    let http = Client::builder()
+        .timeout(Duration::from_secs(30))
+        .user_agent(concat!("Kubuno-Build/", env!("CARGO_PKG_VERSION"), " (self-hosted)"))
+        .build()
+        .context("Création du client HTTP")?;
+
+    let files_client = FilesClient::new(
+        settings.core.files_url.clone(),
+        settings.core.internal_secret.clone(),
+    );
+
+    // Instance settings: compiled defaults, then one read from the core so the
+    // first requests already see the administrator's ceiling rather than the
+    // default. A failed read just leaves the defaults in place.
+    let instance = Arc::new(std::sync::RwLock::new(
+        kubuno_build::config::instance::InstanceConfig::default(),
+    ));
+    if let Some(cfg) = kubuno_build::config::instance::fetch(
+        &http,
+        &settings.core.url,
+        &settings.core.internal_secret,
+    )
+    .await
+    {
+        if let Ok(mut w) = instance.write() {
+            *w = cfg;
+        }
+    }
+
+    let state = AppState {
+        db:           pool,
+        settings:     Arc::new(settings.clone()),
+        http:         http.clone(),
+        files_client: Arc::new(files_client),
+        instance:     instance.clone(),
+    };
+
+    // Register with the core
+    register_with_core(&http, &settings).await;
+
+    // Instance-settings refresher: an admin edit takes effect within a minute,
+    // no restart. A failed read keeps the last good values.
+    {
+        let http_refresh     = http.clone();
+        let settings_refresh = settings.clone();
+        let instance_refresh = instance.clone();
+        tokio::spawn(async move {
+            loop {
+                tokio::time::sleep(Duration::from_secs(60)).await;
+                if let Some(cfg) = kubuno_build::config::instance::fetch(
+                    &http_refresh,
+                    &settings_refresh.core.url,
+                    &settings_refresh.core.internal_secret,
+                )
+                .await
+                {
+                    if let Ok(mut w) = instance_refresh.write() {
+                        *w = cfg;
+                    }
+                }
+            }
+        });
+    }
+
+    // Heartbeat every 30s
+    {
+        let http2     = http.clone();
+        let settings2 = settings.clone();
+        tokio::spawn(async move {
+            loop {
+                tokio::time::sleep(Duration::from_secs(30)).await;
+                let url    = format!("{}/internal/modules/build/heartbeat", settings2.core.url);
+                let secret = &settings2.core.internal_secret;
+                match http2.post(&url).header("X-Internal-Secret", secret.as_str()).send().await {
+                    Ok(r) if r.status().is_success() => {}
+                    Ok(r) if r.status() == reqwest::StatusCode::NOT_FOUND => {
+                        tracing::info!("Heartbeat 404 — re-enregistrement…");
+                        register_with_core(&http2, &settings2).await;
+                    }
+                    Ok(r) if r.status() == reqwest::StatusCode::FORBIDDEN => {
+                        tracing::info!("Module désactivé, attente…");
+                    }
+                    Ok(r)  => tracing::warn!(status = %r.status(), "Heartbeat inattendu"),
+                    Err(e) => tracing::warn!(error = %e, "Heartbeat erreur réseau"),
+                }
+            }
+        });
+    }
+
+    // HTTP server
+    let addr = format!("{}:{}", settings.server.host, settings.server.port);
+    let listener = tokio::net::TcpListener::bind(&addr)
+        .await
+        .with_context(|| format!("Bind sur {addr}"))?;
+
+    tracing::info!("Kubuno Build démarré sur http://{addr}");
+
+    let app = router::build(state);
+    axum::serve(listener, app).await.context("Erreur du serveur HTTP")?;
+
+    Ok(())
+}
+
+fn backoff(attempt: u32) -> u64 {
+    if attempt <= 10 { (attempt * 2) as u64 } else { 30 }
+}
+
+async fn register_with_core(http: &Client, settings: &Settings) {
+    let base_url = format!("http://{}:{}", settings.server.host, settings.server.port);
+    let core_url = &settings.core.url;
+    let secret   = &settings.core.internal_secret;
+
+    let manifest = load_manifest();
+    let display_name = manifest.as_ref().map(|m| m.module.display_name.as_str()).unwrap_or("Build").to_string();
+    let description  = manifest.as_ref().and_then(|m| m.module.description.clone());
+    let sidebar_items: Vec<Value> = manifest.as_ref()
+        .map(|m| m.sidebar_items.iter().map(|s| json!({
+            "id":       s.id,
+            "label":    s.label,
+            "icon":     s.icon,
+            "path":     s.path,
+            "position": s.position,
+        })).collect())
+        .unwrap_or_else(|| vec![
+            json!({ "id": "build", "label": "Build", "icon": "DraftingCompass", "path": "/build", "position": 60 }),
+        ]);
+    let subscribed_events: Vec<String> = manifest.as_ref()
+        .and_then(|m| m.events.as_ref())
+        .map(|e| e.subscribed.clone())
+        .unwrap_or_else(|| vec!["UserDeleted".into()]);
+    // Declarative instance settings + admin pages, forwarded so the core can render
+    // the generic form and split the admin panel into sub-menus.
+    let settings_schema: Value = manifest.as_ref()
+        .map(|m| serde_json::to_value(&m.settings).unwrap_or_else(|_| json!([])))
+        .unwrap_or_else(|| json!([]));
+    let setting_groups: Value = manifest.as_ref()
+        .map(|m| serde_json::to_value(&m.setting_groups).unwrap_or_else(|_| json!([])))
+        .unwrap_or_else(|| json!([]));
+
+    let payload = json!({
+        "module_id":         "build",
+        "display_name":      display_name,
+        "description":       description,
+        "base_url":          base_url,
+        "version":           env!("CARGO_PKG_VERSION"),
+        "routes":            [{ "method": "*", "path": "/*" }],
+        "sidebar_items":     sidebar_items,
+        "subscribed_events": subscribed_events,
+        "settings_schema":   settings_schema,
+        "setting_groups":    setting_groups,
+    });
+
+    for attempt in 1u32.. {
+        let url = format!("{core_url}/internal/modules/register");
+        match http.post(&url)
+            .header("X-Internal-Secret", secret.as_str())
+            .json(&payload)
+            .send()
+            .await
+        {
+            Ok(resp) if resp.status().is_success() => {
+                tracing::info!("Module build enregistré auprès du core");
+                return;
+            }
+            Ok(resp) if resp.status() == reqwest::StatusCode::FORBIDDEN => {
+                tracing::info!(attempt, "Module désactivé, retry dans 30s…");
+                tokio::time::sleep(Duration::from_secs(30)).await;
+            }
+            Ok(resp) => {
+                let wait = backoff(attempt);
+                tracing::warn!(attempt, status = %resp.status(), "Enregistrement échoué, retry dans {wait}s…");
+                tokio::time::sleep(Duration::from_secs(wait)).await;
+            }
+            Err(e) => {
+                let wait = backoff(attempt);
+                tracing::warn!(attempt, error = %e, "Core inaccessible, retry dans {wait}s…");
+                tokio::time::sleep(Duration::from_secs(wait)).await;
+            }
+        }
+    }
+    unreachable!()
+}

@@ -1,0 +1,99 @@
+[module]
+id           = "build"
+display_name = "Build"
+version      = "0.1.0"
+description  = "Conception assistée : Architect (bâtiments/urbanisme 2D-3D) et CAO3D (modélisation 3D paramétrique à cotes métriques)."
+author       = "Kubuno Contributors"
+license      = "AGPL-3.0"
+homepage_url = "https://github.com/kubuno/kubuno"
+runtime      = "rust"
+dependencies = []
+
+[process]
+entrypoint = "kubuno-build"
+args       = []
+
+[server]
+host = "127.0.0.1"
+port = 3124
+
+[routes]
+patterns = [
+    { method = "*", path = "/*" },
+]
+
+[[sidebar_items]]
+id       = "build"
+label    = "Build"
+icon     = "DraftingCompass"
+path     = "/build"
+position = 60
+section  = "main"
+
+[events]
+subscribed = [
+    "UserDeleted",
+]
+publishes = []
+
+# ── Déclaration des paramètres (architecture module-settings du core) ─────────
+# Chaque réglage ci-dessous a un point d'application réel : soit le serveur
+# (max_document_bytes, refusé à l'écriture), soit l'éditeur, qui lit les réglages
+# marqués `public = true` dans /api/v1/config au chargement.
+
+[[setting_groups]]
+id       = "stockage"
+label    = "Stockage"
+icon     = "HardDrive"
+position = 1
+description = "Le poids maximal d'un modèle qu'un utilisateur peut enregistrer."
+
+[[setting_groups]]
+id       = "edition"
+label    = "Édition"
+icon     = "DraftingCompass"
+position = 2
+description = "Ce que les éditeurs Architect et CAO3D proposent par défaut à l'ouverture d'un document."
+
+[[settings]]
+key         = "max_document_bytes"
+scope       = "global"
+type        = "int"
+default     = 52428800
+min         = 1048576
+max         = 2147483648
+unit        = "octets"
+label       = "Taille maximale d'un document"
+description = "Poids maximal d'un modèle Architect ou CAO3D enregistré, mesuré sur le contenu COMPRESSÉ tel qu'il est stocké dans les fichiers. Au-delà, l'enregistrement — comme la duplication et l'import — est refusé."
+category    = "Documents"
+group       = "stockage"
+
+[[settings]]
+key         = "default_unit"
+scope       = "global"
+type        = "enum"
+default     = "mm"
+public      = true
+label       = "Unité de mesure par défaut"
+description = "Unité métrique d'un document nouvellement créé, dans Architect comme dans CAO3D. Les documents existants gardent la leur."
+category    = "Nouveau document"
+group       = "edition"
+values  = [
+    { value = "mm", label = "Millimètres (mm)" },
+    { value = "cm", label = "Centimètres (cm)" },
+    { value = "m",  label = "Mètres (m)" },
+]
+
+[[settings]]
+key         = "autosave_interval_s"
+scope       = "global"
+type        = "int"
+default     = 20
+min         = 0
+max         = 3600
+unit        = "s"
+public      = true
+label       = "Intervalle d'enregistrement automatique"
+description = "Délai entre deux enregistrements automatiques d'un document ouvert et modifié. 0 désactive l'enregistrement automatique : seuls Ctrl+S et le bouton Enregistrer écrivent alors sur le serveur."
+category    = "Enregistrement"
+group       = "edition"

@@ -1,0 +1,104 @@
+[package]
+name        = "kubuno-build"
+version     = "0.1.0"
+edition     = "2021"
+description = "Kubuno Build — conception 2D/3D (Architect + CAO3D)"
+license     = "AGPL-3.0"
+repository  = "https://github.com/kubuno/build"
+
+[[bin]]
+name = "kubuno-build"
+path = "src/main.rs"
+
+[dependencies]
+# Workspace
+tokio              = { workspace = true }
+axum               = { workspace = true }
+tower              = { workspace = true }
+tower-http         = { workspace = true }
+async-trait        = { workspace = true }
+sqlx               = { workspace = true }
+serde              = { workspace = true }
+serde_json         = { workspace = true }
+reqwest            = { workspace = true }
+config             = { workspace = true }
+dotenvy            = { workspace = true }
+validator          = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }
+kubuno-seccomp     = { workspace = true }
+kubuno-modauth     = { workspace = true }
+kubuno-drive       = { workspace = true }
+kubuno-db          = { workspace = true }
+thiserror          = { workspace = true }
+anyhow             = { workspace = true }
+uuid               = { workspace = true }
+chrono             = { workspace = true }
+toml               = { workspace = true }
+bytes              = { workspace = true }
+flate2             = { workspace = true }
+
+# ─── Workspace mono-crate (deps tierces recopiées du monorepo kubuno/core ;
+#     crates partagées consommées via dépendances git taguées) ───
+[dev-dependencies]
+tempfile = "3"
+
+[workspace]
+
+[workspace.package]
+version      = "0.1.0"
+edition      = "2021"
+authors      = ["Kubuno Contributors"]
+license      = "AGPL-3.0"
+repository   = "https://github.com/kubuno/kubuno"
+rust-version = "1.82"
+
+[workspace.dependencies]
+# Async
+tokio       = { version = "1",    features = ["full"] }
+axum        = { version = "0.7",  features = ["macros", "ws", "multipart"] }
+tower       = { version = "0.5",  features = ["full"] }
+tower-http  = { version = "0.6",  features = ["cors", "compression-gzip", "trace", "limit", "fs", "set-header", "timeout"] }
+async-trait = "0.1"
+
+# Database
+# One binary, three engines. The administrator picks PostgreSQL, MySQL/MariaDB
+# or SQLite in configuration (`database.engine`); all three drivers are compiled
+# in, and kubuno-db dispatches at run time. The FromRow derive on the module's
+# structs resolves against the three row types, so the three drivers must be
+# present here too.
+sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio", "uuid", "chrono", "json", "migrate", "tls-rustls", "derive", "macros", "postgres", "mysql", "sqlite"] }
+
+# Sérialisation
+serde      = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# HTTP Client (enregistrement auprès du core + heartbeat)
+reqwest = { version = "0.12", features = ["json"] }
+
+# Config & Env
+config  = "0.14"
+dotenvy = "0.15"
+
+# Validation
+validator = { version = "0.21", features = ["derive"] }
+
+# Logging & Tracing
+tracing            = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+kubuno-seccomp     = { git = "https://github.com/kubuno/core", tag = "seccomp-v0.1.1", package = "kubuno-seccomp" }
+kubuno-modauth     = { git = "https://github.com/kubuno/core", tag = "modauth-v0.1.0", package = "kubuno-modauth" }
+# FilesClient (IPC vers le module drive) : le contenu des documents vit en fichiers .kb***
+kubuno-drive       = { git = "https://github.com/kubuno/drive", tag = "drive-v0.1.10", package = "kubuno-drive", default-features = false }
+kubuno-db          = { git = "https://github.com/kubuno/core", tag = "db-v0.9.0", package = "kubuno-db" }
+
+# Erreurs
+thiserror = "1"
+anyhow    = "1"
+
+# Utils
+uuid   = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+toml   = "0.8"
+bytes  = "1"
+flate2 = "1"

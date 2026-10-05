@@ -1,0 +1,23 @@
+# Kubuno Build — exemple de configuration.
+# Copié vers /etc/kubuno/modules/build/config.toml par le postinst du paquet.
+# La plupart des valeurs sont injectées par le core via variables d'environnement
+# (KUBUNO_DB_*, KUBUNO_INTERNAL_SECRET, KUBUNO_CORE_URL).
+
+[server]
+host = "127.0.0.1"
+port = 3124
+
+[core]
+url = "http://127.0.0.1:8080"
+# internal_secret = "…"   # sinon fourni par KUBUNO_INTERNAL_SECRET
+
+[database]
+# host/user/password/database sinon fournis par KUBUNO_DB_*
+max_connections = 10
+min_connections = 1
+connect_timeout = 10
+run_migrations  = true
+
+[logging]
+level  = "info"
+format = "pretty"

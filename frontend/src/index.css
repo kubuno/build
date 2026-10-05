@@ -1,0 +1,9 @@
+/* Émet les utilitaires Tailwind de CE module dans la couche `kubuno-module` pour
+ * qu'ils ne supplantent jamais les utilitaires responsive du shell host (le CSS
+ * du module est injecté après celui du host au runtime). Imports granulaires :
+ * le plugin @tailwindcss/vite ignore layer() sur le raccourci. */
+@layer theme, base, components, kubuno-module;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(kubuno-module) source("../");
+@import "./theme.css";
