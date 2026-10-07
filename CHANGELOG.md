@@ -26,6 +26,11 @@ number at release time, and CI publishes that section as the GitHub Release note
 
 ### Changed
 
+- **The repository is organised by platform.** The server (its sources, migrations, tests and configuration
+  example) moves to `server/` and the web frontend to `web/`, with their history, and `mobile/` is reserved
+  for the mobile apps. The `.kbpkg` is unchanged (same files, same contents); the build script, the CI
+  workflows and the Makefile follow (whose targets now build `kubuno-build`, not the maps binary), and the
+  repository gets its Visual Studio solution, `Kubuno.Build.slnx`, like the other modules.
 - **This module now installs as a Kubuno package (`.kbpkg`) only.** Its system
   packages (Debian/RPM and the Windows and macOS installers) are no longer
   built: the module is distributed as one `.kbpkg` per platform (Linux, Windows,

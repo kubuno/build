@@ -56,8 +56,9 @@ Kubuno is **modular**: each module is a **separate process** that registers with
 | Sidebar | `Build` |
 | Process isolation | `kubuno-seccomp` (no `execve` on the host) |
 
-- **Backend** — `src/`: Axum + SQLx (PostgreSQL, schema `build`); document CRUD with trash / restore / duplicate, and per-document content files written into the Drive module via the `kubuno-drive` client. Purges a user's documents on the `UserDeleted` core event.
-- **Frontend** — `frontend/`: a React 19 bundle built to `entry.js`, rendering with **Three.js** (WebGL). It consumes `@kubuno/sdk`, `@ui` and `@kubuno/drive` from npm, provided by the host at runtime via the import map.
+- **Server** — `server/`: Axum + SQLx (PostgreSQL, schema `build`); document CRUD with trash / restore / duplicate, and per-document content files written into the Drive module via the `kubuno-drive` client. Purges a user's documents on the `UserDeleted` core event.
+- **Web** — `web/`: a React 19 bundle built to `entry.js`, rendering with **Three.js** (WebGL). It consumes `@kubuno/sdk`, `@ui` and `@kubuno/drive` from npm, provided by the host at runtime via the import map.
+- **Mobile** — `mobile/`: reserved for the mobile apps (see `mobile/README.md`).
 
 ## 📦 Install
 
@@ -75,8 +76,8 @@ sudo systemctl restart kubuno              # the core loads the module on (re)st
 **Requirements:** Rust ≥ 1.82, Node.js ≥ 24, PostgreSQL 16.
 
 ```bash
-cargo build --release                      # backend (shared crates from git tags)
-cd frontend && npm ci && npm run build     # frontend bundle → dist/{entry.js, entry.css}
+cd server && cargo build --release         # backend (shared crates from git tags)
+cd web && npm ci && npm run build          # frontend bundle → web/dist/{entry.js, entry.css}
 bash build_kbpkg.sh                        # → dist/build-<version>-<os>-<arch>.kbpkg
 bash build_kbpkg.sh --install              # build + install into the local store + restart
 bash ../_tools/deploy_local.sh build       # fast local rebuild + restart (after first install)
