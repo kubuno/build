@@ -8,8 +8,8 @@ import { geometryFromManifold, kernel, type FaceRun } from './kernel'
 
 // The parametric recompute pipeline (FreeCAD's Document::recompute, in
 // miniature): replay the feature timeline in order, each feature reading the
-// results of the features it references. A failing feature gets an error flag
-// - it never invalidates the document - and features after the rollback tip
+// results of the features it references. A failing feature gets an error flag -
+// it never invalidates the document - and features after the rollback tip
 // are simply not computed. All Manifold intermediates are freed before
 // returning; only display geometry (three.js) leaves this module.
 
