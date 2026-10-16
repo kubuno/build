@@ -2,7 +2,7 @@
 //! the console.
 //!
 //! Declared by `module.toml`'s `[[settings]]` blocks, stored in `core.settings`,
-//! and read back here through `/internal/modules/build/settings` — a module owns
+//! and read back here through `/internal/modules/build/settings` - a module owns
 //! its own schema and cannot read the core's tables, and a background refresher
 //! has no user token for the public config route. The module is named in the URL
 //! (not derived from the secret) so the read works whether the instance shares
@@ -10,8 +10,8 @@
 //!
 //! Only `max_document_bytes` lives here: it is the module's single SERVER-side
 //! lever, enforced in `services::content_files` (the one write path of the
-//! Architect and CAO3D models). The other two settings the manifest declares —
-//! the default unit and the auto-save interval — describe CLIENT behaviour and
+//! Architect and CAO3D models). The other two settings the manifest declares -
+//! the default unit and the auto-save interval - describe CLIENT behaviour and
 //! are marked `public = true` so the front end reads them from
 //! `/api/v1/config`; the backend has nothing to do with them, so it does not
 //! pretend to hold them.
@@ -45,7 +45,7 @@ impl InstanceConfig {
         let d = Self::default();
 
         // The console stores an `int` as a JSON number, but a value echoed from
-        // a text field can arrive as a string — accept both, then range-check
+        // a text field can arrive as a string - accept both, then range-check
         // against the bounds module.toml declares.
         let v = settings.get("max_document_bytes");
         let max_document_bytes = v

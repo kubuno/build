@@ -22,7 +22,7 @@ pub struct ListParams {
     pub trashed: bool,
 }
 
-/// List the caller's documents (summaries only — no scene blob).
+/// List the caller's documents (summaries only - no scene blob).
 pub async fn list(
     State(state): State<AppState>,
     Extension(user): Extension<BuildUser>,
@@ -34,7 +34,7 @@ pub async fn list(
 
 /// Load a document and hydrate it from its .kb*** content file: the scene JSON
 /// is read from the file and the title self-heals from the file name (the file
-/// is the source of truth — it may have been renamed in Files). Legacy rows
+/// is the source of truth - it may have been renamed in Files). Legacy rows
 /// whose content still lives in the `data` column are migrated to a file on
 /// first read.
 async fn fetch_document(state: &AppState, owner_id: Uuid, id: Uuid) -> Result<Document, BuildError> {
@@ -170,7 +170,7 @@ pub async fn delete_permanent(
 
     svc::delete(&state.db, user.id, id).await?;
 
-    // Clean the orphaned content file (best-effort — the row is already gone).
+    // Clean the orphaned content file (best-effort - the row is already gone).
     if let Some(fid) = file_id {
         if let Err(e) = state.files_client.delete_file(user.id, fid).await {
             tracing::warn!(error = %e, document = %id, "suppression du fichier de contenu échouée");
@@ -200,7 +200,7 @@ pub struct OpenByFileDto {
     pub file_id: Uuid,
 }
 
-/// Resolve (or import) the document behind a drive file — used by the Files
+/// Resolve (or import) the document behind a drive file - used by the Files
 /// double-click. A .kbarch/.kbcao copied or uploaded into drive has no row
 /// yet: one is created on the fly so the file opens like any document.
 pub async fn open_by_file(

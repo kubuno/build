@@ -1,4 +1,4 @@
-# Kubuno Build — mobile apps
+# Kubuno Build - mobile apps
 
 Reserved for the mobile clients of the Build module, organised like the other platforms of this repository:
 

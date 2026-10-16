@@ -1,4 +1,4 @@
-// Modèle de données du ruban (façon MS Office) — partagé par TOUS les sous-éditeurs
+// Modèle de données du ruban (façon MS Office) - partagé par TOUS les sous-éditeurs
 // Office. Chaque sous-éditeur déclare ses onglets ; le composant <Ribbon> fait tout
 // le rendu, le style et le responsive. Data-driven : enrichir le ruban = enrichir
 // ces structures + <Ribbon>, jamais dupliquer par éditeur.
@@ -7,7 +7,7 @@ import type { ReactNode } from 'react'
 export type RibbonItemKind =
   | 'button'      // bouton d'action (large = icône+libellé empilés ; small = compact)
   | 'toggle'      // bouton bascule (état actif surligné)
-  | 'dropdown'    // liste déroulante (police, taille…) — rendu via @ui Dropdown
+  | 'dropdown'    // liste déroulante (police, taille…) - rendu via @ui Dropdown
   | 'split'       // action principale + petit chevron ouvrant un menu d'options
   | 'gallery'     // rangée d'options/vignettes (styles, couleurs…)
   | 'separator'   // séparateur vertical dans un groupe

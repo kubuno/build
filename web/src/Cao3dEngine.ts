@@ -32,7 +32,7 @@ interface Mats {
 }
 
 // A live push/pull gesture: dragging a face along the pad's plane normal to
-// set its height — either editing an existing pad or padding a ground sketch.
+// set its height - either editing an existing pad or padding a ground sketch.
 interface PushDrag {
   mode: 'pad' | 'sketch'
   featureId: string          // pad id (mode pad) or sketch id (mode sketch)
@@ -43,7 +43,7 @@ interface PushDrag {
   height: number             // current height (mm)
 }
 
-// CAO3D engine v2 — parametric. The model is a feature timeline (cao3dModel):
+// CAO3D engine v2 - parametric. The model is a feature timeline (cao3dModel):
 // sketches referenced by pads/revolutions/lofts, solids referenced by combines.
 // Tools and ribbon commands *append or edit features*; the actual geometry is
 // produced by the recompute pipeline (cao3dRecompute + Manifold kernel), and
@@ -175,7 +175,7 @@ export class Cao3dEngine extends BaseEngine<CaoModel> {
   // ---- Recompute → scene ---------------------------------------------------
   protected rebuild() {
     this.ensureMaterials()
-    // Scene objects are about to be replaced — forget hover material swaps.
+    // Scene objects are about to be replaced - forget hover material swaps.
     this.hoverSwaps = []
     this.hoverId = null
     this.clearContent()
@@ -195,12 +195,12 @@ export class Cao3dEngine extends BaseEngine<CaoModel> {
         this.content.add(group)
       } else if (rt.geometry) {
         // While a sketch is being edited, solids turn into ghosts so the
-        // drawing reads clearly — but they still recompute live (a pad follows
+        // drawing reads clearly - but they still recompute live (a pad follows
         // its sketch as you drag it: the parametric feedback loop).
         const mat = editing ? this.mats.bodyDim : this.isSel(f.id) ? this.mats.bodySel : this.mats.body
         const mesh = new THREE.Mesh(rt.geometry, mat)
         mesh.userData.eid = f.id
-        // Manifold outputs are watertight and clean — outline edges work on
+        // Manifold outputs are watertight and clean - outline edges work on
         // every solid now, including booleans (impossible with the old CSG).
         const obj = editing ? mesh : withEdges(mesh, this.mats.edge, f.id)
         if (f.pos) obj.position.set(f.pos[0], f.pos[1], f.pos[2])
@@ -278,7 +278,7 @@ export class Cao3dEngine extends BaseEngine<CaoModel> {
     this.enterSketch(f.id)
   }
 
-  /** « Nouvelle esquisse » with no explicit plane: arm the plane-pick tool —
+  /** « Nouvelle esquisse » with no explicit plane: arm the plane-pick tool -
    *  clicking a solid face sketches on that face, the grid = the ground. */
   private startPlanePick() {
     if (this.sketchMode) this.exitSketch()
@@ -384,7 +384,7 @@ export class Cao3dEngine extends BaseEngine<CaoModel> {
   }
 
   /** Tint the body/sketch under the pointer so what a click would select is
-   *  obvious — material swap only, no recompute/rebuild involved. */
+   *  obvious - material swap only, no recompute/rebuild involved. */
   private updateHoverHighlight(ev: PointerEvent) {
     const id = this.pickedId(ev)
     if (id === this.hoverId) return
@@ -737,7 +737,7 @@ export class Cao3dEngine extends BaseEngine<CaoModel> {
     return inside
   }
 
-  // Undo/redo reload the model from a snapshot — the sketch editor must be
+  // Undo/redo reload the model from a snapshot - the sketch editor must be
   // re-bound to the fresh feature object (or closed if the sketch vanished).
   undo() { super.undo(); this.rebindSketch() }
   redo() { super.redo(); this.rebindSketch() }
@@ -795,7 +795,7 @@ export class Cao3dEngine extends BaseEngine<CaoModel> {
     else if (name === 'view.ortho') this.h.setOrtho3d(!!p.on)
   }
 
-  /** Meshes of the visible solids, world transforms baked — export payload. */
+  /** Meshes of the visible solids, world transforms baked - export payload. */
   exportSolids(): THREE.Object3D | null {
     this.content.updateMatrixWorld(true)
     const g = new THREE.Group()

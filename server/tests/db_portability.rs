@@ -1,5 +1,5 @@
 //! Runs build's own migrations and its own document service against a real
-//! server of **each** engine, from a single compiled binary — the proof that
+//! server of **each** engine, from a single compiled binary - the proof that
 //! the engine is a run-time choice, not a build-time one.
 //!
 //! * SQLite always runs (a temp file, no server).
@@ -60,7 +60,7 @@ async fn migrated_pool(settings: kubuno_db::DbSettings) -> (kubuno_db::DbPool, i
 /// The whole document DB path the handlers exercise: insert, read back, the
 /// list filters, the metadata update, trash/restore (including the MySQL
 /// "changed nothing" caveat), permanent delete, import-by-file, and the
-/// UserDeleted cleanup — everything but the drive-file orchestration.
+/// UserDeleted cleanup - everything but the drive-file orchestration.
 async fn full_suite(pool: &kubuno_db::DbPool) {
     let owner = Uuid::new_v4();
     let file_a = Uuid::new_v4();
@@ -93,7 +93,7 @@ async fn full_suite(pool: &kubuno_db::DbPool) {
     // ── list: filters by trashed and by kind ──
     let active = svc::list(pool, owner, false, None).await.expect("list");
     assert_eq!(active.len(), 2);
-    // Ordered by updated_at DESC — the second insert is not older than the first.
+    // Ordered by updated_at DESC - the second insert is not older than the first.
     let only_cao = svc::list(pool, owner, false, Some("cao3d")).await.expect("list kind");
     assert_eq!(only_cao.len(), 1);
     assert_eq!(only_cao[0].id, id_b);

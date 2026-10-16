@@ -1,7 +1,7 @@
 import type { Vec2 } from './geometry'
 import { uid } from './util'
 
-// CAO3D document model v2 — a parametric feature history, FreeCAD-style.
+// CAO3D document model v2 - a parametric feature history, FreeCAD-style.
 // The document is an ordered list of *features*; each feature owns typed,
 // re-editable parameters and references earlier features by id (a DAG plunged
 // into a linear timeline). Nothing is destructive any more: a pad references
@@ -59,7 +59,7 @@ export interface FeatureBase {
 /** Where a sketch lives: the ground (XZ), the origin planes (XY front /
  *  YZ side) with an optional offset along their normal, or a planar face of a
  *  solid captured at pick time (origin + normal + in-plane x axis; `feature`
- *  records provenance — the plane is a static snapshot, not re-anchored). */
+ *  records provenance - the plane is a static snapshot, not re-anchored). */
 export type SketchPlane =
   | { kind: 'ground'; offset?: number }
   | { kind: 'xy'; offset?: number }
@@ -193,7 +193,7 @@ export function emptyCaoModel(): CaoModel {
 
 // ---- Typed feature parameters (FreeCAD property system, in miniature) -------
 // Each feature type declares its editable numeric parameters. The properties
-// panel and the timeline editor are both derived from these specs — no
+// panel and the timeline editor are both derived from these specs - no
 // per-feature UI code.
 export interface FeaturePropSpec {
   key: string
@@ -285,7 +285,7 @@ export function featureRefs(f: Feature): string[] {
   }
 }
 
-/** Ids of every feature that (transitively) depends on `id` — used for cascade
+/** Ids of every feature that (transitively) depends on `id` - used for cascade
  *  delete: removing a sketch removes its pads, then the combines above them. */
 export function dependentsOf(model: CaoModel, id: string): Set<string> {
   const doomed = new Set<string>([id])

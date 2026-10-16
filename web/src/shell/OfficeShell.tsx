@@ -1,4 +1,4 @@
-// OfficeShell — la chrome COMMUNE à tous les sous-éditeurs Office, qui remplace la
+// OfficeShell - la chrome COMMUNE à tous les sous-éditeurs Office, qui remplace la
 // barre de menus + la toolbar par un RUBAN (façon MS Office). Enveloppe le
 // `WorkspaceShell` du core : reprend toutes ses props (topbar, titre, retour, thème,
 // actions, statut, rail, bottom/status bar, corps…) et rend le ruban dans le slot
@@ -13,7 +13,7 @@ import { ConfirmDialog } from '@ui'
 import { Ribbon, RibbonTabStrip } from '../ribbon/Ribbon'
 import type { RibbonTab, RibbonGroup, RibbonItem } from '../ribbon/types'
 
-// Réduction du ruban (façon MS Office) — PRÉFIXE de clé : suffixée par le sous-module
+// Réduction du ruban (façon MS Office) - PRÉFIXE de clé : suffixée par le sous-module
 // (cf. `ribbonKey`) → persistance PAR sous-module. Défaut = déplié.
 const RIBBON_COLLAPSED_KEY = 'kubuno.ribbon.collapsed'
 
@@ -75,7 +75,7 @@ export function OfficeShell({ ribbon, activeTabId, onTabChange, theme = WORKSPAC
   const activeTab = activeTabId ?? ownTab
   const changeTab = useCallback((id: string) => { onTabChange?.(id); if (activeTabId === undefined) setOwnTab(id) }, [onTabChange, activeTabId])
 
-  // ── Plein écran (F11) — bouton garanti dans Affichage → Afficher de TOUT ruban ──
+  // ── Plein écran (F11) - bouton garanti dans Affichage → Afficher de TOUT ruban ──
   const { t } = useTranslation()
   const [isFullscreen, setIsFullscreen] = useState(() => typeof document !== 'undefined' && !!document.fullscreenElement)
   useEffect(() => {

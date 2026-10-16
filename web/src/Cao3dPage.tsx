@@ -21,9 +21,9 @@ import { initSketchSolver } from './sketchSolver'
  *  (sketch constraint solver). */
 const prepare = () => Promise.all([initKernel(), initSketchSolver()]).then(() => {})
 
-// CAO3D v2 — parametric editor à la FreeCAD/Fusion: sketches, features and
+// CAO3D v2 - parametric editor à la FreeCAD/Fusion: sketches, features and
 // combines live in a re-editable timeline (recomputed by the Manifold kernel).
-// The ribbon is command-first: no inline number fields any more — every
+// The ribbon is command-first: no inline number fields any more - every
 // parameter (height, angle, radius…) is edited after the fact in the
 // properties panel or the history panel, because nothing is destructive.
 export default function Cao3dPage() {
@@ -35,7 +35,7 @@ export default function Cao3dPage() {
     id, kind: 'toggle' as const, size, label, icon, active: c.tool === id, onClick: () => c.setTool(id),
   })
 
-  // Accueil — the everyday modeling flow: sketch a profile, turn it into a solid.
+  // Accueil - the everyday modeling flow: sketch a profile, turn it into a solid.
   const homeGroups = useCallback((c: EditorController): RibbonGroup[] => {
     const tool = toolItem(c)
     return [
@@ -91,7 +91,7 @@ export default function Cao3dPage() {
     ]
   }, [t])
 
-  // Esquisse — contextual tab while the in-place sketch editor is open:
+  // Esquisse - contextual tab while the in-place sketch editor is open:
   // constrained drawing tools, constraint buttons (applied to the current
   // selection), driving dimensions, and the finish button. planegcs solves
   // after every action; the DoF chip reports the result.
@@ -149,7 +149,7 @@ export default function Cao3dPage() {
     }
   }, [t])
 
-  // Solide — combine (Manifold booleans) / transform (gizmos) / edge modifiers.
+  // Solide - combine (Manifold booleans) / transform (gizmos) / edge modifiers.
   const solidTab = useCallback((c: EditorController): RibbonTab => {
     const tool = toolItem(c)
     return {

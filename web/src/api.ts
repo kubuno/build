@@ -25,7 +25,7 @@ function readUnit(value: unknown): Unit {
 }
 
 function readInterval(value: unknown): number {
-  // An empty string means "unset", not "0" — Number('') would say 0 and silently
+  // An empty string means "unset", not "0" - Number('') would say 0 and silently
   // disable auto-saving.
   const text = typeof value === 'string' ? value.trim() : ''
   const n = typeof value === 'number' ? value : text === '' ? NaN : Number(text)

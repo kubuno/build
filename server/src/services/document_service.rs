@@ -54,7 +54,7 @@ pub async fn get(db: &DbPool, owner_id: Uuid, id: Uuid) -> Result<Option<Documen
     db.fetch_optional_as::<Document>(SELECT_ONE, params![id, owner_id]).await
 }
 
-/// List the owner's documents (summaries only — no scene blob). The optional
+/// List the owner's documents (summaries only - no scene blob). The optional
 /// `kind` is bound twice ($3, $4): a placeholder cannot be reused, and a typed
 /// NULL parameter carries text without PostgreSQL's `$3::text` cast.
 pub async fn list(

@@ -2,7 +2,7 @@ import type { ScreenPoint } from './Viewport3D'
 
 // Immediate-mode HTML label layer for crisp dimension/tool labels drawn over the
 // WebGL canvas. Engines call begin() once per frame, add() for each visible
-// label, then end() to hide the leftovers. Elements are pooled — no per-frame
+// label, then end() to hide the leftovers. Elements are pooled - no per-frame
 // allocation, no React churn.
 export interface LabelStyle {
   color?: string

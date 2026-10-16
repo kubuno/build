@@ -46,7 +46,7 @@ export interface SelectionInfo {
 /** One row of the parametric timeline (construction history) panel. */
 export interface TimelineItem {
   id: string
-  /** Feature type (sketch, pad, revolve, loft, combine…) — picks the icon. */
+  /** Feature type (sketch, pad, revolve, loft, combine…) - picks the icon. */
   type: string
   name: string
   suppressed: boolean

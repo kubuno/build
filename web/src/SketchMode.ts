@@ -16,7 +16,7 @@ import type { Unit } from './types'
 
 // In-place sketch editing (FreeCAD Sketcher / Fusion « Modifier l'esquisse »):
 // the camera locks face-on to the sketch plane, solids dim out, and the sketch
-// becomes a live constrained drawing — every mutation goes through planegcs,
+// becomes a live constrained drawing - every mutation goes through planegcs,
 // endpoints become draggable handles resolved in real time, and the remaining
 // degrees of freedom are reported to the status chip. The engine delegates all
 // pointer/tool/selection handling here while a sketch is open.
@@ -327,7 +327,7 @@ export class SketchMode {
     this.resolve(true)
   }
 
-  /** Rectangle as 4 segments + coincident corners + horizontal/vertical — the
+  /** Rectangle as 4 segments + coincident corners + horizontal/vertical - the
    *  canonical constrained rectangle (FreeCAD's rectangle tool). */
   private addConstrainedRect(p0: Vec2, p1: Vec2) {
     if (Math.abs(p0.x - p1.x) < 1 || Math.abs(p0.y - p1.y) < 1) return
@@ -510,7 +510,7 @@ export class SketchMode {
       }
       if (anchor) labels.add(text, project(anchor), { background: 'rgba(43,111,176,0.85)', color: '#fff', bold: true })
     }
-    // Drawing previews (rubber lines are drawn by the engine's preview group —
+    // Drawing previews (rubber lines are drawn by the engine's preview group -
     // here we only surface the live numbers).
     if (this.tool === 'sk.segment' && this.segChain && this.hover) {
       const t = this.host.snap(this.hover)

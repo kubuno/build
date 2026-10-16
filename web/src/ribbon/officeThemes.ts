@@ -23,7 +23,7 @@ export function fileAccentFor(accent: string): string {
   return lighten(accent, 0.3)
 }
 
-// Build — une teinte par sous-application (façon Office : chaque éditeur a sa
+// Build - une teinte par sous-application (façon Office : chaque éditeur a sa
 // couleur de bande d'onglets). Architect = bleu ardoise (plans), CAO3D = acier
 // orangé (mécanique, façon Fusion).
 export const THEME_ARCHITECT = officeTheme('#1f6f8b')

@@ -71,7 +71,7 @@ export class ArchitectEngine extends BaseEngine<ArchModel> {
     const sel = (color: number, opts: THREE.MeshStandardMaterialParameters = {}) =>
       std(color, { emissive: accent, emissiveIntensity: 0.55, ...opts })
     // Tuned for the light-grey Architect background: bright white walls, a soft
-    // grey floor slab, dark asphalt roads — all defined by the dark edge lines.
+    // grey floor slab, dark asphalt roads - all defined by the dark edge lines.
     this.mats = {
       wall: std(0xffffff), wallSel: sel(0xffffff),
       slab: std(0xc2c8d0), slabSel: sel(0xc2c8d0),

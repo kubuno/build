@@ -79,7 +79,7 @@ export function Viewport3D({
   background?: number
   /** Minor grid line colour (centre lines use the accent). */
   gridColor?: number
-  /** Vertical background gradient [top, bottom] — Fusion-style studio backdrop. */
+  /** Vertical background gradient [top, bottom] - Fusion-style studio backdrop. */
   gradient?: [number, number]
   /** Keep the sketch grid visible in 3D and swap the solid floor for a
    *  transparent shadow-catcher (CAD mode: one sketches in the 3D view). */
@@ -381,14 +381,14 @@ export function Viewport3D({
     }
 
     applyMode(mode)
-    // Corner navigation cube (3D views only) — synced + clickable.
+    // Corner navigation cube (3D views only) - synced + clickable.
     const navcube = navCube
       ? new NavCube(renderer, () => ({ camera: handle.camera, controls: handle.controls }))
       : null
     onReadyRef.current?.(handle)
 
     // Newly-added content meshes must cast/receive shadows. Re-tag only when the
-    // content group's child count changes (i.e. after a rebuild) — cheap.
+    // content group's child count changes (i.e. after a rebuild) - cheap.
     let taggedCount = -1
     const tagShadows = () => {
       if (content.children.length === taggedCount) return

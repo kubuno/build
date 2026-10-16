@@ -49,11 +49,11 @@ export class NavCube {
 
   constructor(
     private renderer: THREE.WebGLRenderer,
-    /** Live accessors — the main camera/controls are swapped by view changes. */
+    /** Live accessors - the main camera/controls are swapped by view changes. */
     private main: () => { camera: THREE.Camera; controls: { target: THREE.Vector3; update: () => void } },
   ) {
     this.mats = FACE_DEFS.map(f => new THREE.MeshBasicMaterial({ map: faceTexture(f.label) }))
-    // BoxGeometry material order: +x, -x, +y, -y, +z, -z — matches FACE_DEFS.
+    // BoxGeometry material order: +x, -x, +y, -y, +z, -z - matches FACE_DEFS.
     this.cube = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), this.mats)
     this.scene.add(this.cube)
     this.camera.position.set(0, 0, 5)

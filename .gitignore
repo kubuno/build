@@ -1,17 +1,17 @@
 # ─────────────────────────────────────────────────────────────
-# Kubuno — files that are NOT versioned (build artefacts, data, secrets).
+# Kubuno - files that are NOT versioned (build artefacts, data, secrets).
 # Only SOURCE CODE is committed; anything that can be regenerated is excluded.
 # ─────────────────────────────────────────────────────────────
 
-# Rust — build artefacts
+# Rust - build artefacts
 /target/
 **/target/
 
-# Node — dependencies
+# Node - dependencies
 node_modules/
 **/node_modules/
 
-# Frontend — build output
+# Frontend - build output
 /web/dist/
 /web/dist-modules/
 *.tsbuildinfo
@@ -22,7 +22,7 @@ node_modules/
 *.deb
 *.rpm
 
-# build scripts — local state
+# build scripts - local state
 /.build_state
 /.build_number
 

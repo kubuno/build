@@ -6,7 +6,7 @@ import { uid } from './util'
 // that emits building volumes, bridges and whole city grids. Everything metric
 // (mm). A seed makes a layout reproducible; bump it to reroll.
 
-/** mulberry32 — tiny deterministic PRNG. */
+/** mulberry32 - tiny deterministic PRNG. */
 export function rng(seed: number): () => number {
   let a = seed >>> 0
   return () => {

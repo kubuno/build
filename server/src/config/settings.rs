@@ -19,7 +19,7 @@ pub struct ServerSettings {
 pub struct CoreSettings {
     pub url:             String,
     pub internal_secret: String,
-    /// Base URL of the files (drive) module — document content lives there.
+    /// Base URL of the files (drive) module - document content lives there.
     pub files_url:       String,
 }
 

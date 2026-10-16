@@ -39,7 +39,7 @@ pub fn build(state: AppState) -> Router {
         .merge(system)
         .merge(ipc)
         .nest("/", authed)
-        // Scenes can be large (3D geometry) — allow generous request bodies.
+        // Scenes can be large (3D geometry) - allow generous request bodies.
         .layer(DefaultBodyLimit::max(64 * 1024 * 1024))
         .layer(CorsLayer::permissive())
         .layer(TraceLayer::new_for_http())

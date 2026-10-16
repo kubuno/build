@@ -12,5 +12,5 @@ pub mod state;
 /// the ATTACHed SQLite file. Declared once and passed to every kubuno-db call.
 pub const SCHEMA: &str = "build";
 
-/// FilesClient (IPC to the drive module) — same alias convention as office.
+/// FilesClient (IPC to the drive module) - same alias convention as office.
 pub use kubuno_drive::client as files_client;

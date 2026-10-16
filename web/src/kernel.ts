@@ -8,7 +8,7 @@ import type { Vec2 } from './geometry'
 // Geometry kernel for CAO3D, backed by Manifold (manifold-3d WASM). Manifold
 // guarantees topologically valid (watertight, oriented) solids through boolean
 // operations and traces face provenance (runOriginalID), which is the basis of
-// our stable face naming — the lesson learned from FreeCAD's fifteen years of
+// our stable face naming - the lesson learned from FreeCAD's fifteen years of
 // topological-naming pain: bake provenance in from day one.
 //
 // Conventions: Manifold builds solids Z-up from XY polygons; our world is Y-up

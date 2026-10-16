@@ -2,7 +2,7 @@
 name        = "kubuno-build"
 version     = "0.1.0"
 edition     = "2021"
-description = "Kubuno Build — conception 2D/3D (Architect + CAO3D)"
+description = "Kubuno Build - conception 2D/3D (Architect + CAO3D)"
 license     = "AGPL-3.0"
 repository  = "https://github.com/kubuno/build"
 

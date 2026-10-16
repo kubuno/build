@@ -3,7 +3,7 @@ import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js'
 
 // Mesh exporters for the backstage: binary STL (universal 3D printing) and
 // GLB (glTF binary, universal viewers). Input is the engine's exportSolids()
-// group — meshes with world transforms already baked.
+// group - meshes with world transforms already baked.
 
 /** Serialize every mesh under `root` into one binary STL. */
 export function toBinaryStl(root: THREE.Object3D): ArrayBuffer {

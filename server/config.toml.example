@@ -1,4 +1,4 @@
-# Kubuno Build — exemple de configuration.
+# Kubuno Build - exemple de configuration.
 # Copié vers /etc/kubuno/modules/build/config.toml par le postinst du paquet.
 # La plupart des valeurs sont injectées par le core via variables d'environnement
 # (KUBUNO_DB_*, KUBUNO_INTERNAL_SECRET, KUBUNO_CORE_URL).

@@ -64,7 +64,7 @@ pub fn strip_ext(name: &str) -> String {
 
 // ── Document size ceiling (instance setting) ─────────────────────────────────
 // Single enforcement point for both sub-applications: Architect and CAO3D reach
-// the drive through the helpers below. Measured on the GZIPPED payload — what is
+// the drive through the helpers below. Measured on the GZIPPED payload - what is
 // actually stored.
 
 fn check_document_size(state: &AppState, gz_len: usize) -> Result<(), BuildError> {
@@ -131,7 +131,7 @@ pub async fn rename_content_file(state: &AppState, owner_id: Uuid, file_id: Uuid
     Ok(())
 }
 
-/// Current name of the content file (best-effort — None on any error).
+/// Current name of the content file (best-effort - None on any error).
 pub async fn file_name(state: &AppState, owner_id: Uuid, file_id: Uuid) -> Option<String> {
     state.files_client.get_file_meta(owner_id, file_id).await.ok().map(|info| info.name)
 }

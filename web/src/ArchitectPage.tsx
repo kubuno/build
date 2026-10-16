@@ -39,7 +39,7 @@ export default function ArchitectPage() {
     id, kind: 'toggle' as const, size, label, icon, active: c.tool === id, onClick: () => c.setTool(id),
   })
 
-  // Accueil — structure / openings / roofs (the everyday drawing tools).
+  // Accueil - structure / openings / roofs (the everyday drawing tools).
   const homeGroups = useCallback((c: EditorController): RibbonGroup[] => {
     const tool = toolItem(c)
     return [
@@ -68,7 +68,7 @@ export default function ArchitectPage() {
     ]
   }, [t])
 
-  // Insertion — site tools + procedural generators.
+  // Insertion - site tools + procedural generators.
   const extraTabs = useCallback((c: EditorController): RibbonTab[] => {
     const tool = toolItem(c)
     return [{

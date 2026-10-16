@@ -56,7 +56,7 @@ export function buildEntityLine(e: SketchEntity, material: THREE.LineBasicMateri
 // ---- Fillet / chamfer primitive shells (three.js, converted to Manifold) ----
 function roundedCylinder(r: number, height: number, radius: number): THREE.BufferGeometry {
   // Lathe of a profile (x = radius, y = height) whose outer top+bottom corners
-  // are rounded (fillet) — smooth blending is exactly what a fillet wants.
+  // are rounded (fillet) - smooth blending is exactly what a fillet wants.
   const rr = Math.min(radius, r * 0.99, height / 2)
   const pts: THREE.Vector2[] = [new THREE.Vector2(0, 0)]
   const seg = 8
@@ -68,7 +68,7 @@ function roundedCylinder(r: number, height: number, radius: number): THREE.Buffe
   return new THREE.LatheGeometry(pts, LATHE_SEGMENTS)
 }
 
-// A machined chamfer must read as crisp 45° facets — a lathe would smooth the
+// A machined chamfer must read as crisp 45° facets - a lathe would smooth the
 // crease between wall and bevel. Assemble the cylinder from separate pieces
 // (wall, two bevel cones, two caps): vertices are not shared across parts, so
 // shading stays smooth AROUND the axis but breaks sharply ACROSS each crease.

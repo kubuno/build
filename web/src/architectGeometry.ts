@@ -5,7 +5,7 @@ import { boundingRect, inset, rectPoly, type Rect } from './procedural'
 
 // Turns the Architect model into three.js meshes. Walls become oriented boxes;
 // openings split a wall into pillars plus a header (and a sill for windows), so
-// doors/windows read as real gaps in both the 2D top view and the 3D elevation —
+// doors/windows read as real gaps in both the 2D top view and the 3D elevation -
 // no CSG needed. Every mesh is tagged with userData.eid for picking.
 
 /** A box oriented along `dir`, centred on the wall centre-line, from yBottom→yTop. */
@@ -62,7 +62,7 @@ export function buildWall(wall: ArchWall, openings: ArchOpening[], material: THR
   return meshes
 }
 
-/** A thin panel filling an opening — a door leaf or a glazed window pane. Makes
+/** A thin panel filling an opening - a door leaf or a glazed window pane. Makes
  *  openings visible in 3D and pickable (tagged with the opening id). */
 export function buildOpeningPanel(wall: ArchWall, o: ArchOpening, material: THREE.Material): THREE.Mesh | null {
   const L = dist(wall.a, wall.b)
@@ -119,7 +119,7 @@ export function buildRoof(roof: ArchRoof, material: THREE.Material): THREE.Mesh 
 
   if (roof.type === 'flat') {
     const th = 150
-    // Top and four sides of a thin slab (bottom omitted — sits on the walls).
+    // Top and four sides of a thin slab (bottom omitted - sits on the walls).
     const c00 = V(x0, b + th, z0), c10 = V(x1, b + th, z0), c11 = V(x1, b + th, z1), c01 = V(x0, b + th, z1)
     quad(c00, c10, c11, c01)
     const d00 = V(x0, b, z0), d10 = V(x1, b, z0), d11 = V(x1, b, z1), d01 = V(x0, b, z1)

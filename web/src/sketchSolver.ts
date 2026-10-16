@@ -3,17 +3,17 @@ import wasmUrl from '@salusoft89/planegcs/dist/planegcs_dist/planegcs.wasm?url'
 import type { Vec2 } from './geometry'
 import type { ConstraintRef, SketchConstraint, SketchEntity, SketchFeature } from './cao3dModel'
 
-// Bridge to planegcs — FreeCAD's 2D geometric constraint solver, compiled to
+// Bridge to planegcs - FreeCAD's 2D geometric constraint solver, compiled to
 // WASM (@salusoft89/planegcs). Our sketch entities/constraints are converted to
 // planegcs primitives, solved (DogLeg by default), and the solution is written
 // back into entity copies. The solver also reports the remaining degrees of
-// freedom and the conflicting/redundant constraints — the live feedback shown
+// freedom and the conflicting/redundant constraints - the live feedback shown
 // in the sketch editor, exactly like FreeCAD's Sketcher.
 
 let wrapper: GcsWrapper | null = null
 let initPromise: Promise<void> | null = null
 
-// The emscripten artifact ships without type declarations — type its surface.
+// The emscripten artifact ships without type declarations - type its surface.
 type PlanegcsInit = (opts?: { locateFile: () => string }) => Promise<{
   GcsSystem: new () => ConstructorParameters<typeof GcsWrapper>[0]
 }>

@@ -1,4 +1,4 @@
-/** Build module bundle — loaded at runtime by the host (cf. vite.config). */
+/** Build module bundle - loaded at runtime by the host (cf. vite.config). */
 import { lazy } from 'react'
 import {
   RouteRegistry, CollapseSidebarRegistry, WaffleAppRegistry, FileTypeRegistry,

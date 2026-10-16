@@ -1,4 +1,4 @@
-// <Ribbon> — ruban façon MS Office, partagé par tous les sous-éditeurs Office.
+// <Ribbon> - ruban façon MS Office, partagé par tous les sous-éditeurs Office.
 // Rendu data-driven depuis `RibbonTab[]` : bande d'onglets (+ onglets contextuels à
 // droite avec liseré coloré) puis, pour l'onglet actif, une rangée de GROUPES (boîte
 // + libellé en bas, séparés par des filets). Les petits items se rangent en colonnes
@@ -18,7 +18,7 @@ const CONTENT_H = 84   // hauteur de la zone de groupes (items + libellé)
 
 // Bande d'onglets du ruban, extraite pour pouvoir être rendue soit EN LIGNE au-dessus
 // des groupes (défaut historique), soit DANS LA TOPBAR du WorkspaceShell (`inTopbar` :
-// onglets alignés en bas, fond transparent — la topbar a déjà la couleur de bande).
+// onglets alignés en bas, fond transparent - la topbar a déjà la couleur de bande).
 export function RibbonTabStrip({ tabs, theme, activeId, onSelect, tabStripActions, inTopbar = false, height, collapsed = false, onToggleCollapsed }: {
   tabs: RibbonTab[]
   theme: WorkspaceTheme
@@ -213,7 +213,7 @@ export function Ribbon({ tabs, theme, activeTabId, onTabChange, tabStripActions,
 
   return (
     <div ref={rootRef} style={{ flexShrink: 0, userSelect: 'none' }}>
-      {/* Bande d'onglets (masquée si rendue ailleurs — dans la topbar) */}
+      {/* Bande d'onglets (masquée si rendue ailleurs - dans la topbar) */}
       {!hideTabs && (
         <RibbonTabStrip tabs={visibleTabs} theme={theme} activeId={cur?.id} onSelect={setActive} tabStripActions={tabStripActions} />
       )}
@@ -305,7 +305,7 @@ function RibbonGroupsRow({ groups, theme, height }: { groups: RibbonGroup[]; the
   })
 
   return (
-    // overflow-hidden : plus de barre de défilement — on replie au lieu de défiler.
+    // overflow-hidden : plus de barre de défilement - on replie au lieu de défiler.
     <div ref={rowRef} className="flex items-stretch px-2 overflow-hidden" style={{ height, background: theme.bg, borderBottom: `1px solid ${theme.border}`, fontSize: 11 }}>
       {groups.map((g, i) => {
         const last = i === n - 1
@@ -417,7 +417,7 @@ function RibbonGroupView({ group, theme, last }: { group: RibbonGroup; theme: Wo
   )
 }
 
-// RÈGLE : un petit bouton ne peut JAMAIS être sur plus de 3 lignes — on empile les
+// RÈGLE : un petit bouton ne peut JAMAIS être sur plus de 3 lignes - on empile les
 // petits items consécutifs en colonnes de 3 MAX (au-delà, nouvelle colonne), façon
 // Office. Tout le reste (gros bouton, dropdown, gallery, custom, séparateur) forme sa
 // propre colonne. Le budget vertical (CONTENT_H 84 − padding − libellé) impose des
@@ -439,12 +439,12 @@ function toColumns(items: RibbonItem[]): RibbonItem[][] {
 
 // Contenu d'un GROS bouton (3 positions verticales), façon Office :
 //  · icône EN HAUT, plus grande que les petits boutons (24 vs 16) ; occupe la 1ʳᵉ position.
-//  · libellé sur 2 lignes MAX, ces 2 lignes TOUJOURS réservées (positions 2 & 3) — hauteur
+//  · libellé sur 2 lignes MAX, ces 2 lignes TOUJOURS réservées (positions 2 & 3) - hauteur
 //    constante quel que soit le libellé.
 //  · bouton à MENU (`chevron`) : le chevron va SUR la 2e ligne si le libellé tient sur 1
 //    ligne, ou À LA FIN de la 2e ligne si le libellé tient sur 2 lignes (mesuré à l'exécution).
 //    Pour un `split`, `chevronOnClick` rend le chevron cliquable (ouvre le menu) sans quitter
-//    l'action principale du bouton — via un <span> pour ne pas imbriquer deux <button>.
+//    l'action principale du bouton - via un <span> pour ne pas imbriquer deux <button>.
 function LargeButtonContent({ icon, label, chevron, chevronOnClick }: {
   icon?: ReactNode
   label?: string

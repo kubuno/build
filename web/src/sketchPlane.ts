@@ -5,7 +5,7 @@ import type { SketchPlane, Vec3Tuple } from './cao3dModel'
 // Sketch-plane geometry: every sketch lives on a plane described by an origin,
 // a normal and an in-plane x axis; the in-plane y axis is x × normal, which
 // keeps the ground-plane mapping identical to the legacy convention
-// (Vec2 {x,y} → world (x, 0, y)) and guarantees a right-handed frame — solids
+// (Vec2 {x,y} → world (x, 0, y)) and guarantees a right-handed frame - solids
 // built in "ground space" and transformed onto the plane keep their winding
 // (a mirrored frame would turn Manifold solids inside out).
 
@@ -59,7 +59,7 @@ export function intersectRay(b: PlaneBasis, ray: THREE.Ray): Vec2 | null {
 }
 
 /** World transform mapping "ground space" (sketch x, height, sketch y) onto the
- *  plane — the matrix applied to Manifold solids built flat. Column-major
+ *  plane - the matrix applied to Manifold solids built flat. Column-major
  *  elements are directly consumable by Manifold.transform(). */
 export function planeMatrix(b: PlaneBasis): THREE.Matrix4 {
   return new THREE.Matrix4().makeBasis(b.x, b.normal, b.y).setPosition(b.origin)
@@ -72,7 +72,7 @@ export function isGroundIdentity(plane: SketchPlane): boolean {
 
 /** Build a serializable face plane from a raycast hit (point + world normal).
  *  The x axis is chosen horizontal when possible (stable, readable sketches).
- *  Captured statically — it does not re-anchor if the solid moves later. */
+ *  Captured statically - it does not re-anchor if the solid moves later. */
 export function facePlaneFromHit(point: THREE.Vector3, normal: THREE.Vector3, feature?: string): SketchPlane {
   const n = normal.clone().normalize()
   const up = new THREE.Vector3(0, 1, 0)

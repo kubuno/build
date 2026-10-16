@@ -9,7 +9,7 @@ import { geometryFromManifold, kernel, type FaceRun } from './kernel'
 // The parametric recompute pipeline (FreeCAD's Document::recompute, in
 // miniature): replay the feature timeline in order, each feature reading the
 // results of the features it references. A failing feature gets an error flag
-// — it never invalidates the document — and features after the rollback tip
+// - it never invalidates the document - and features after the rollback tip
 // are simply not computed. All Manifold intermediates are freed before
 // returning; only display geometry (three.js) leaves this module.
 
@@ -36,7 +36,7 @@ export interface RecomputeResult {
 
 const refsOf = featureRefs
 
-/** First closed profile loop of a sketch — the profile solids are built from.
+/** First closed profile loop of a sketch - the profile solids are built from.
  *  Chained segment/arc loops come back as synthetic closed polys. */
 function profileOf(sketch: SketchFeature): SketchEntity | null {
   return sketchLoops(sketch)[0] ?? null
@@ -58,7 +58,7 @@ export function recompute(model: CaoModel): RecomputeResult {
   })
 
   // Consumption: a computed feature hides what it references (the sketch under
-  // a pad, the operands of a combine) — hidden but still editable.
+  // a pad, the operands of a combine) - hidden but still editable.
   for (const f of model.features) {
     if (!items.get(f.id)!.computed) continue
     for (const ref of refsOf(f)) {
@@ -72,9 +72,9 @@ export function recompute(model: CaoModel): RecomputeResult {
   // stamped `asOriginal` so their faces stay attributable through booleans.
   const solids = new Map<string, Manifold>()
   /** Cut tools of pocket/groove features, kept so mirror/pattern can repeat
-   *  the CUT (the hole) instead of unioning solids — which would fill it. */
+   *  the CUT (the hole) instead of unioning solids - which would fill it. */
   const cutters = new Map<string, Manifold>()
-  /** Posed operand clones for combines — freed at the end. */
+  /** Posed operand clones for combines - freed at the end. */
   const scratch: Manifold[] = []
 
   const sketchAt = (id: string): SketchFeature | null => {

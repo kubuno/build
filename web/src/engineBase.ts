@@ -63,7 +63,7 @@ export abstract class BaseEngine<M> implements BuildEngine {
   protected abstract drawLabels(): void
   protected abstract onToolDown(world: Vec2, ev: PointerEvent): void
   protected abstract onToolMove(world: Vec2 | null, ev: PointerEvent): void
-  /** Pointer released (left button) while a non-select tool is active — used by
+  /** Pointer released (left button) while a non-select tool is active - used by
    *  press-drag tools such as push/pull. Default: nothing. */
   protected onToolUp(_world: Vec2 | null, _ev: PointerEvent): void {}
   /** Whether the active (non-select) tool still resolves clicks to a selection
@@ -115,7 +115,7 @@ export abstract class BaseEngine<M> implements BuildEngine {
     else this.onSelectDown(w, ev)
   }
 
-  /** Pointer pressed with the select tool — lets engines start select-mode
+  /** Pointer pressed with the select tool - lets engines start select-mode
    *  drags (sketch endpoint handles…). Default: nothing. */
   protected onSelectDown(_world: Vec2, _ev: PointerEvent): void {}
 
@@ -158,7 +158,7 @@ export abstract class BaseEngine<M> implements BuildEngine {
 
   // ---- Camera-control gating --------------------------------------------
   /** Tools that keep the LEFT button on the camera (select + gizmo tools).
-   *  Drawing/press-drag tools own the left button — but CAD navigation stays
+   *  Drawing/press-drag tools own the left button - but CAD navigation stays
    *  available on the middle (orbit) and right (pan) buttons. */
   protected allowsOrbit(): boolean { return this.tool === 'select' }
 
@@ -169,7 +169,7 @@ export abstract class BaseEngine<M> implements BuildEngine {
     c.enableRotate = is3d
     c.enablePan = true
     c.enableZoom = true
-    // OrbitControls ignores buttons mapped to null — the active tool keeps them.
+    // OrbitControls ignores buttons mapped to null - the active tool keeps them.
     type Buttons = typeof c.mouseButtons
     c.mouseButtons = {
       LEFT: orbit ? (is3d ? THREE.MOUSE.ROTATE : THREE.MOUSE.PAN) : null,
@@ -298,7 +298,7 @@ export abstract class BaseEngine<M> implements BuildEngine {
       const oldId = obj.id as string
       idMap.set(oldId, uid(oldId.replace(/[^a-zA-Z].*$/, '') || 'e'))
     }
-    const OFFSET = 500 // mm — ~half a metre planar shift, keeps duplicates visible
+    const OFFSET = 500 // mm - ~half a metre planar shift, keeps duplicates visible
     const remap = (v: unknown): unknown => {
       if (typeof v === 'string') return idMap.get(v) ?? v
       if (Array.isArray(v)) return v.map(remap)

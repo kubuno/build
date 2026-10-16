@@ -64,7 +64,7 @@ min         = 1048576
 max         = 2147483648
 unit        = "octets"
 label       = "Taille maximale d'un document"
-description = "Poids maximal d'un modèle Architect ou CAO3D enregistré, mesuré sur le contenu COMPRESSÉ tel qu'il est stocké dans les fichiers. Au-delà, l'enregistrement — comme la duplication et l'import — est refusé."
+description = "Poids maximal d'un modèle Architect ou CAO3D enregistré, mesuré sur le contenu COMPRESSÉ tel qu'il est stocké dans les fichiers. Au-delà, l'enregistrement - comme la duplication et l'import - est refusé."
 category    = "Documents"
 group       = "stockage"
 

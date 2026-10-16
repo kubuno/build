@@ -231,7 +231,7 @@ export function BuildEditor({
     }
   }, [titleDraft, refreshDocs])
 
-  // ---- Start page (recents + create) — landing AND backstage Accueil -------
+  // ---- Start page (recents + create) - landing AND backstage Accueil -------
   const createDoc = useCallback(async () => {
     // The instance decides the metric unit a new document opens in.
     const created = await buildApi.create({ kind, title: newLabel, unit: instanceConfig.defaultUnit })
@@ -362,7 +362,7 @@ export function BuildEditor({
   }), [tool, setTool, view, setView, hasSelection, deleteSelection, fitView, undo, redo, history, sketchActive, run])
 
   const ribbon: RibbonTab[] = useMemo(() => {
-    // Clipboard (shared helper) — ALWAYS the first group of the Home tab.
+    // Clipboard (shared helper) - ALWAYS the first group of the Home tab.
     // Undo/Redo are NOT in the ribbon: they live in the tab strip
     // (`UndoRedoButtons`, see `titleActions`).
     const clipGroup: RibbonGroup = clipboardGroup({
@@ -410,7 +410,7 @@ export function BuildEditor({
     return [fileTab, home, ...(extraTabs ? extraTabs(ctrl) : [])]
   }, [t, tool, hasSelection, deleteSelection, copySelection, cutSelection, paste, fitView, showViewToggle, view, setView, setTool, homeGroups, extraTabs, ctrl, fileTab])
 
-  // The contextual « Esquisse » tab appears when the sketch editor opens —
+  // The contextual « Esquisse » tab appears when the sketch editor opens -
   // switch to it automatically, and back to Accueil when the sketch closes.
   const prevSketchActive = useRef(false)
   useEffect(() => {
@@ -419,7 +419,7 @@ export function BuildEditor({
     onTabChange(sketchActive ? 'sketch' : 'home')
   }, [sketchActive, onTabChange])
 
-  // ---- Landing (no :id in the route) — Office-style ModuleHome --------------
+  // ---- Landing (no :id in the route) - Office-style ModuleHome --------------
   if (!id) {
     return (
       <>
