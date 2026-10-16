@@ -25,6 +25,8 @@ number at release time, and CI publishes that section as the GitHub Release note
   at compile time, so none is built at run time at all.
 
 ### Changed
+- **The ribbon comes from the shared Kubuno UI library.** The module's own copy of the ribbon is replaced by the
+  one of `@kubuno/ui` (0.1.18), shared by every module that has a ribbon. Build gets back what its copy had lost: the ribbon on phones (bottom command bar and palette) and the larger 32 px icons of the large buttons.
 
 - **The repository is organised by platform.** The server (its sources, migrations, tests and configuration
   example) moves to `server/` and the web frontend to `web/`, with their history, and `mobile/` is reserved
